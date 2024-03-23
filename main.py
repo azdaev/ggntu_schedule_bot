@@ -11,10 +11,13 @@ config = config.Config()
 bot = telebot.TeleBot(config.telegram_api_token, parse_mode="HTML")
 cache = cache.Cache(config.redis_host, config.redis_port)
 
-bot.set_my_commands([types.BotCommand('me', 'Указать группу'),
+bot.set_my_commands([
+                     types.BotCommand('me', 'Указать группу'),
                      types.BotCommand('today', 'Сегодня'),
                      types.BotCommand('tomorrow', 'Завтра'),
-                     types.BotCommand('week', 'На неделе')])
+                     types.BotCommand('week', 'На этой неделе'),
+                     types.BotCommand('next_week', 'На следующей неделе'),
+                     ])
 
 
 @bot.message_handler(commands=['start'])
@@ -43,7 +46,13 @@ def process_group_name_step(message: Message):
         return
 
     cache.set_users_group(message.from_user.id, group_id)
-    bot.send_message(message.chat.id, f"Группа установлена. Можешь посмотреть расписание на сегодня - /today\nНа завтра - /tomorrow\nНа неделе - /week")
+    bot.send_message(message.chat.id, 
+                    "Группа установлена. Можешь посмотреть расписание:\n" +
+                    "На сегодня - /today\n" +
+                    "На завтра - /tomorrow\n" +
+                    "На неделе - /week\n" +
+                    "На следующей неделе - /next_week"
+                    )
 
 
 @bot.message_handler(commands=['today'])
