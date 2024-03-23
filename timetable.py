@@ -47,6 +47,11 @@ def get_current_week_index():
     """
     return 2 - (datetime.datetime.today().isocalendar()[1] % 2)
 
+def get_next_week_index():
+    """
+    Get next week index. First week is 1. Second week is 2. Third - 1, fourth - 2 etc.
+    """
+    return 2 - ((datetime.datetime.today().isocalendar()[1] + 1) % 2)
 
 def request_timetable(group_id):
     """
