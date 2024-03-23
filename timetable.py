@@ -1,7 +1,4 @@
 import datetime
-import json
-import logging
-
 import requests
 
 LESSON_TIMES = {
@@ -57,19 +54,19 @@ def request_timetable(group_id):
     """
     timetable_unsorted = requests.get(
         f"https://backend-isu.gstou.ru/api/timetable/public/entrie/?format=json&group={group_id}").json()
-    # sort timetable_unsorted object['week_day'] and then by object['period']
+    # sort timetable_unsorted by object['week_day'] and then by object['period']
     timetable = sorted(timetable_unsorted, key=lambda x: (x['week_day'], x['period']))
     return timetable
 
 
-def get_day_schedule(weekday_id, week_schedule):
+def get_day_schedule(weekday_id, week_schedule, week_index=get_current_week_index()):
     """
         Get day's schedule from weekly schedule
     """
     day_lessons = []
     for lesson in week_schedule:
         if lesson['week_day'] == weekday_id:
-            if lesson.get('week') is not None and lesson.get('week') != get_current_week_index():  # not this week
+            if lesson.get('week') is not None and lesson.get('week') != week_index:  # not this week
                 continue
 
             if len(day_lessons) > 0 and lesson['period'] == day_lessons[-1]['period']:  # duplicate lesson
@@ -103,10 +100,10 @@ def string_day_schedule(day_lessons):
     return result.strip("\n")
 
 
-def string_week_schedule(week_schedule):
+def string_week_schedule(week_schedule, week_index=get_current_week_index()):
     days_lessons = [[] for i in range(7)]
     for i in range(1, 8):
-        days_lessons[i - 1] = get_day_schedule(i, week_schedule)
+        days_lessons[i - 1] = get_day_schedule(i, week_schedule, week_index=week_index)
 
     result = ""
 
