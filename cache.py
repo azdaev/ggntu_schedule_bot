@@ -4,13 +4,20 @@ import redis
 
 
 def seconds_until_next_monday():
-    today = datetime.date.today()
-    days_until_next_monday = (7 - today.weekday() + 0) % 7  # Monday is 0 in Python's weekday() function
-    next_monday = today + datetime.timedelta(days=days_until_next_monday)
-    next_monday_midnight = datetime.datetime.combine(next_monday, datetime.time.min)
+    # count seconds until end of day
     now = datetime.datetime.now()
-    time_until_next_monday = next_monday_midnight - now
-    return int(time_until_next_monday.total_seconds())
+    end_of_today = now.replace(hour=23, minute=59, second=59)
+    until_end_of_today = (end_of_today - now).total_seconds()
+    print(now)
+
+    # count days left in week
+    today_weekday = datetime.date.today().weekday()
+    print(today_weekday)
+    
+    days_until_monday = 7 - today_weekday - 1
+    seconds_until_next_monday = days_until_monday * 24 * 60 * 60 + until_end_of_today
+
+    return int(seconds_until_next_monday)
 
 
 class Cache:
