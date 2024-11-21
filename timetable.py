@@ -24,7 +24,12 @@ def get_next_week_index() -> int:
 def request_timetable(group_id: str) -> List[Dict]:
     """Запросить недельное расписание для группы, отсортированное по дню недели и периоду."""
     url = f"https://backend-isu.gstou.ru/api/timetable/public/entrie/?format=json&group={group_id}"
-    response = requests.get(url)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.9',
+    }
+    response = requests.get(url, headers=headers)
     response.raise_for_status()  # Вызовет исключение при ошибке HTTP
     timetable_unsorted = response.json()
     return sorted(timetable_unsorted, key=lambda x: (x['week_day'], x['period']))

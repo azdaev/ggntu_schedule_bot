@@ -25,8 +25,15 @@ def process_group_name_step(message: Message):
         return
     
     group_id = message.text.strip("\n").strip().upper()        
+    
     resp = requests.get(
-        f"https://backend-isu.gstou.ru/api/timetable/public/entrie/?format=json&group={group_id}")
+        f"https://backend-isu.gstou.ru/api/timetable/public/entrie/?format=json&group={group_id}",
+        headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json',
+            'Accept-Language': 'en-US,en;q=0.9',
+        },
+        timeout=5)
     if resp.status_code != 200:
         bot.reply_to(message, "Группа не найдена. Попробуйте еще раз или отмените ввод группы - /cancel")
         bot.register_next_step_handler(message, process_group_name_step)
@@ -116,9 +123,16 @@ def get_stats(message: Message):
                           f"Number of groups - {cache.get_groups_count()}\n")
 
 def test_network():
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.9',
+    }
     try:
-        print("Testing connection to backend-isu.gstou.ru...")
-        response = requests.get("https://backend-isu.gstou.ru", timeout=5)
+        print("Testing connection to backend-isu.gstou.ru API...")
+        # Test with a known group ID that exists
+        test_url = "https://backend-isu.gstou.ru/api/timetable/public/entrie/?format=json&group=1"
+        response = requests.get(test_url, headers=headers, timeout=5)
         response.raise_for_status()
         print("Connection successful!")
         return True
