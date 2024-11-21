@@ -115,6 +115,19 @@ def get_stats(message: Message):
     bot.reply_to(message, f"Number of users - {cache.get_users_count()}\n"
                           f"Number of groups - {cache.get_groups_count()}\n")
 
+def test_network():
+    try:
+        print("Testing connection to backend-isu.gstou.ru...")
+        response = requests.get("https://backend-isu.gstou.ru", timeout=5)
+        response.raise_for_status()
+        print("Connection successful!")
+        return True
+    except Exception as e:
+        print(f"Connection failed: {str(e)}")
+        return False
 
-print("starting bot")
+print("Starting bot...")
+if not test_network():
+    print("Network test failed! Check your internet connection.")
+    exit(1)
 bot.infinity_polling()
