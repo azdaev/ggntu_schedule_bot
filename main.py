@@ -131,7 +131,7 @@ def test_network():
     try:
         print("Testing connection to backend-isu.gstou.ru API...")
         # Test with a known group ID that exists
-        test_url = "https://backend-isu.gstou.ru/api/timetable/public/entrie/?format=json&group=1"
+        test_url = "https://backend-isu.gstou.ru/api/timetable/public/entrie/?format=json&group=ист-21"
         response = requests.get(test_url, headers=headers, timeout=5)
         response.raise_for_status()
         print("Connection successful!")
