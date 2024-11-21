@@ -6,6 +6,11 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      - TELEGRAM_API_TOKEN=${TELEGRAM_API_TOKEN}
+      - TELEGRAM_ADMIN_ID=${TELEGRAM_ADMIN_ID}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
     ports:
       - "8080:8080"
     depends_on:
@@ -15,12 +20,13 @@ services:
     image: redis:latest
     command: redis-server --appendonly yes
     restart: unless-stopped
-    env_file:
-      - .env
+    environment:
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
     ports:
       - "6379:6379"
     volumes:
-    - ./redis-data:/data
+      - ./redis-data:/data
 
 volumes:
   redis-data:
